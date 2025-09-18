@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Interactivo de Tendencias zDevOps</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cool Blues and Neutrals -->
+    <!-- Application Structure Plan: La aplicación está diseñada como un panel de control de una sola página con navegación superior fija para facilitar el acceso a diferentes temas. La estructura no sigue el orden de la imagen, sino que agrupa los conceptos lógicamente: 1) Una introducción y validación general. 2) Una sección de "Principios Fundamentales" que profundiza en los conceptos culturales y de proceso (medición, automatización). 3) Una sección sobre el "Ecosistema Moderno" que aborda el entorno tecnológico (nube híbrida, open source). 4) Una sección dedicada a las "Métricas Clave" (DORA) con un gráfico interactivo para hacer tangible el concepto de medición. 5) Una sección sobre "Tendencias Futuras" que responde directamente a la pregunta del usuario sobre las novedades (zDevSecOps, IA). Esta arquitectura temática permite al usuario explorar desde los fundamentos hasta lo más avanzado de forma fluida y autocontenida. -->
+    <!-- Visualization & Content Choices: 
+        - Afirmaciones de la imagen -> Goal: Validar y detallar -> Method: Tarjetas interactivas con texto explicativo -> Interaction: Clic para expandir y leer más, manteniendo la interfaz limpia.
+        - Métricas DORA -> Goal: Explicar conceptos de medición complejos -> Viz: Gráfico de Radar (Chart.js) -> Interaction: Botones para cambiar los datos del gráfico entre perfiles de rendimiento (Elite, Alto, etc.), demostrando visualmente el impacto de las métricas.
+        - Ecosistema Open Source -> Goal: Mostrar las herramientas clave -> Method: Diagrama visual creado con HTML/CSS (grid/flex) -> Interaction: Hover sobre cada herramienta para mostrar una descripción, ofreciendo información rápida sin abrumar.
+        - Tendencias Futuras -> Goal: Presentar nuevos conceptos de forma clara -> Method: Tarjetas con iconos y texto breve -> Interaction: Clic para revelar una descripción detallada, similar a los principios fundamentales.
+        - Justification: Se eligió Chart.js por su simplicidad y rendimiento en Canvas para las métricas. Las interacciones se basan en clics y hovers para ser intuitivas y no requerir una curva de aprendizaje. El diseño prioriza la claridad y la capacidad de profundizar en la información a demanda del usuario. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .nav-link {
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+        .tool-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-slate-800">Análisis zDevOps</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#validation" class="nav-link font-medium pb-1">Validación</a>
+                <a href="#principles" class="nav-link font-medium pb-1">Principios</a>
+                <a href="#ecosystem" class="nav-link font-medium pb-1">Ecosistema</a>
+                <a href="#metrics" class="nav-link font-medium pb-1">Métricas</a>
+                <a href="#trends" class="nav-link font-medium pb-1">Nuevas Tendencias</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <span class="block w-6 h-0.5 bg-slate-600"></span>
+                <span class="block w-6 h-0.5 bg-slate-600 mt-1.5"></span>
+                <span class="block w-6 h-0.5 bg-slate-600 mt-1.5"></span>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+             <a href="#validation" class="block py-2 nav-link">Validación</a>
+             <a href="#principles" class="block py-2 nav-link">Principios</a>
+             <a href="#ecosystem" class="block py-2 nav-link">Ecosistema</a>
+             <a href="#metrics" class="block py-2 nav-link">Métricas</a>
+             <a href="#trends" class="block py-2 nav-link">Nuevas Tendencias</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <section id="validation" class="mb-20 text-center">
+            <h2 class="text-4xl font-bold mb-4 text-slate-900">Validación de Afirmaciones</h2>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto">
+                Las afirmaciones presentadas en la imagen son <span class="font-semibold text-blue-600">fundamentalmente correctas y siguen siendo relevantes</span>. No han cambiado en esencia, pero sí han evolucionado en su implementación y en las herramientas utilizadas. A continuación, exploramos en detalle cada punto y las tendencias actuales que los rodean.
+            </p>
+        </section>
+
+        <section id="principles" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-2 text-center text-slate-900">Principios Fundamentales de zDevOps</h2>
+            <p class="text-center text-slate-500 mb-12 max-w-3xl mx-auto">zDevOps es más que tecnología; es una filosofía que combina cultura, procesos y herramientas. Estos principios son la base para modernizar el desarrollo en el Mainframe y siguen siendo más válidos que nunca.</p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-bold mb-2 text-blue-600">No hay una receta única</h3>
+                    <p class="text-slate-600">Cada organización tiene una cultura, herramientas y aplicaciones legacy únicas. Por ello, la implementación de zDevOps debe ser a medida, adaptando las prácticas (integración continua, entrega continua, monitoreo) al contexto específico de la empresa en lugar de forzar una solución genérica.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-bold mb-2 text-blue-600">Más que CI/CD</h3>
+                    <p class="text-slate-600">La Integración y Entrega Continuas (CI/CD) son el motor de zDevOps, pero no lo son todo. Abarca también la cultura de colaboración (romper silos entre Dev, Ops, Sec y negocio), la monitorización continua y la creación de ciclos de retroalimentación para una mejora constante del producto y del proceso.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-bold mb-2 text-blue-600">La automatización es clave</h3>
+                    <p class="text-slate-600">Es el pilar de la velocidad y la fiabilidad. En zDevOps, se busca automatizar todo el ciclo de vida: compilación de código COBOL/PL1, despliegue de CICS/Db2, pruebas unitarias y de integración, y hasta el aprovisionamiento de entornos de desarrollo, reduciendo errores manuales y liberando tiempo para la innovación.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-bold mb-2 text-blue-600">No puedes mejorar lo que no mides</h3>
+                    <p class="text-slate-600">La toma de decisiones debe basarse en datos. Se utilizan métricas clave (como las métricas DORA que veremos más adelante) para evaluar la eficiencia del pipeline, la calidad del software y el valor entregado al negocio. Esto permite identificar cuellos de botella y justificar inversiones en mejoras.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="ecosystem" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-2 text-center text-slate-900">El Ecosistema Moderno del Mainframe</h2>
+             <p class="text-center text-slate-500 mb-12 max-w-3xl mx-auto">Lejos de ser una isla, el Mainframe hoy es una pieza central en arquitecturas de nube híbrida, impulsado por herramientas de código abierto que atraen a una nueva generación de desarrolladores.</p>
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="grid lg:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4 text-blue-600">La Nube Híbrida es la nueva realidad</h3>
+                        <p class="text-slate-600 mb-6">El Mainframe actúa como un "System of Record" robusto y seguro, mientras que las aplicaciones en la nube pública o privada funcionan como "Systems of Engagement". La clave es la conectividad fluida a través de APIs (REST, gRPC), permitiendo que aplicaciones modernas consuman datos y lógica de negocio del Mainframe en tiempo real.</p>
+                        
+                        <h3 class="text-2xl font-bold mb-4 text-blue-600">El Mainframe es "cool" de nuevo</h3>
+                        <p class="text-slate-600">La modernización ha hecho que trabajar con el Mainframe sea más accesible. Proyectos como Zowe ofrecen interfaces familiares (CLI, APIs, escritorios web) y extensiones para editores como VS Code, permitiendo a los desarrolladores usar las herramientas que ya conocen y aman. Esto, sumado a su rol crítico en la economía digital, lo hace un campo atractivo y desafiante para nuevo talento.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4 text-center text-slate-800">El Open Source es imprescindible</h3>
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                            <div class="tool-card p-4 bg-slate-50 rounded-lg border border-slate-200 relative group">
+                                <h4 class="font-bold">Git</h4>
+                                <div class="absolute bottom-full mb-2 w-48 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">Control de versiones distribuido para código Mainframe (COBOL, JCL, etc.).</div>
+                            </div>
+                            <div class="tool-card p-4 bg-slate-50 rounded-lg border border-slate-200 relative group">
+                                <h4 class="font-bold">Jenkins</h4>
+                                 <div class="absolute bottom-full mb-2 w-48 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">Orquestador de pipelines CI/CD para automatizar compilaciones y despliegues.</div>
+                            </div>
+                            <div class="tool-card p-4 bg-slate-50 rounded-lg border border-slate-200 relative group">
+                                <h4 class="font-bold">Zowe</h4>
+                                <div class="absolute bottom-full mb-2 w-48 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">Framework abierto para interactuar con z/OS de forma moderna (CLI, APIs, Web).</div>
+                            </div>
+                            <div class="tool-card p-4 bg-slate-50 rounded-lg border border-slate-200 relative group">
+                                <h4 class="font-bold">Ansible</h4>
+                                <div class="absolute bottom-full mb-2 w-48 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">Automatización de configuración y despliegues (Infraestructura como Código).</div>
+                            </div>
+                             <div class="tool-card p-4 bg-slate-50 rounded-lg border border-slate-200 relative group">
+                                <h4 class="font-bold">SonarQube</h4>
+                                 <div class="absolute bottom-full mb-2 w-48 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">Análisis estático de código para calidad y seguridad en lenguajes Mainframe.</div>
+                            </div>
+                             <div class="tool-card p-4 bg-slate-50 rounded-lg border border-slate-200 relative group">
+                                <h4 class="font-bold">VS Code</h4>
+                                 <div class="absolute bottom-full mb-2 w-48 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">Editor de código popular con extensiones para desarrollo y depuración en z/OS.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="metrics" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-2 text-slate-900">Métricas Clave del Éxito: DORA</h2>
+            <p class="text-center text-slate-500 mb-12 max-w-3xl mx-auto">Las métricas DORA (DevOps Research and Assessment) son el estándar de la industria para medir el rendimiento de la entrega de software. Explora cómo se ven estos indicadores en diferentes niveles de madurez.</p>
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="flex justify-center mb-6 space-x-2 flex-wrap">
+                    <button class="dora-btn bg-blue-500 text-white px-4 py-2 rounded-md" data-level="elite">Elite</button>
+                    <button class="dora-btn bg-slate-200 text-slate-700 px-4 py-2 rounded-md" data-level="high">Alto</button>
+                    <button class="dora-btn bg-slate-200 text-slate-700 px-4 py-2 rounded-md" data-level="medium">Medio</button>
+                    <button class="dora-btn bg-slate-200 text-slate-700 px-4 py-2 rounded-md" data-level="low">Bajo</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="doraMetricsChart"></canvas>
+                </div>
+                <div id="metrics-description" class="mt-6 text-center text-slate-600">
+                    <p>Haz clic en los botones para ver el perfil de rendimiento de cada categoría.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="trends" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-2 text-slate-900">Nuevas Tendencias y el Futuro</h2>
+             <p class="text-center text-slate-500 mb-12 max-w-3xl mx-auto">El mundo zDevOps no se detiene. Estas son las tendencias más importantes que están dando forma al futuro del desarrollo en Mainframe, con un fuerte enfoque en la seguridad y la inteligencia artificial.</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-bold mb-2 text-blue-600">zDevSecOps: "Shift-Left Security"</h3>
+                    <p class="text-slate-600">La seguridad ya no es el último paso. Se integra desde el inicio del ciclo de vida ("shift-left"). Esto implica usar herramientas de análisis estático (SAST), dinámico (DAST) y de composición de software (SCA) directamente en el pipeline de CI/CD para detectar vulnerabilidades en código COBOL, Java, etc., antes de que lleguen a producción.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-bold mb-2 text-blue-600">IA y AIOps en el Mainframe</h3>
+                    <p class="text-slate-600">La Inteligencia Artificial se está usando para optimizar operaciones (AIOps). Analiza logs y métricas de rendimiento para predecir fallos, detectar anomalías de seguridad en tiempo real y automatizar la resolución de problemas. En desarrollo, la IA generativa ayuda a crear, documentar y modernizar código legacy.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-bold mb-2 text-blue-600">Infraestructura como Código (IaC)</h3>
+                    <p class="text-slate-600">La definición y gestión de entornos z/OS (subsistemas, seguridad, etc.) se realiza a través de código (usando Ansible, Terraform, etc.) y se versiona en Git. Esto permite crear entornos de desarrollo y pruebas de forma rápida, consistente y repetible, acelerando drásticamente el ciclo de desarrollo.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-bold mb-2 text-blue-600">Observabilidad en Entornos Híbridos</h3>
+                    <p class="text-slate-600">Más allá del monitoreo tradicional, la observabilidad busca entender el 'porqué' de los problemas. Se implementan soluciones de trazas distribuidas que siguen una transacción desde una app móvil, a través de microservicios en la nube, hasta la base de datos Db2 en el Mainframe, ofreciendo una visión completa del rendimiento.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-bold mb-2 text-blue-600">Gestión del Flujo de Valor (VSM)</h3>
+                    <p class="text-slate-600">Value Stream Management (VSM) proporciona una visión de negocio sobre el pipeline de DevOps. Conecta las herramientas de CI/CD, pruebas y despliegue para visualizar todo el flujo, desde la idea hasta la entrega de valor al cliente. Esto ayuda a identificar cuellos de botella no técnicos (ej. esperas por aprobaciones) y a optimizar el proceso completo.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-bold mb-2 text-blue-600">Cloud-Native en z/OS</h3>
+                    <p class="text-slate-600">El Mainframe ahora puede ejecutar cargas de trabajo nativas de la nube. Tecnologías como z/OS Container Extensions (zCX) permiten correr contenedores Docker y orquestadores como Kubernetes directamente en z/OS. Esto facilita la modernización de aplicaciones y unifica la gestión de componentes en todo el entorno híbrido.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 mt-20">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 Análisis zDevOps. Información actualizada basada en tendencias de la industria.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.4
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if(link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    if(mobileMenu.offsetParent !== null) {
+                       mobileMenu.classList.add('hidden');
+                    }
+                    if (link.hash !== "") {
+                        e.preventDefault();
+                        const hash = link.hash;
+                        const targetElement = document.querySelector(hash);
+                        if (targetElement) {
+                             const headerOffset = document.querySelector('header').offsetHeight;
+                             const elementPosition = targetElement.getBoundingClientRect().top;
+                             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                           
+                            window.scrollTo({
+                                 top: offsetPosition,
+                                 behavior: "smooth"
+                            });
+                        }
+                    }
+                });
+            });
+
+            const doraData = {
+                elite: {
+                    labels: ['Frecuencia Despliegue', 'Lead Time', 'Tiempo Restauración', 'Tasa Fallos'],
+                    values: [100, 10, 10, 15],
+                    description: 'Rendimiento élite: Despliegues bajo demanda (múltiples al día), lead time menor a un día, restauración de servicio en menos de una hora y una tasa de fallos inferior al 15%.'
+                },
+                high: {
+                    labels: ['Frecuencia Despliegue', 'Lead Time', 'Tiempo Restauración', 'Tasa Fallos'],
+                    values: [75, 25, 25, 30],
+                    description: 'Rendimiento alto: Despliegues entre una vez por semana y una vez al mes, lead time de una semana, restauración en menos de un día y una tasa de fallos del 16-30%.'
+                },
+                medium: {
+                    labels: ['Frecuencia Despliegue', 'Lead Time', 'Tiempo Restauración', 'Tasa Fallos'],
+                    values: [40, 60, 60, 45],
+                     description: 'Rendimiento medio: Despliegues entre una vez al mes y cada seis meses, lead time de uno a seis meses, restauración en una semana y una tasa de fallos del 31-45%.'
+                },
+                low: {
+                    labels: ['Frecuencia Despliegue', 'Lead Time', 'Tiempo Restauración', 'Tasa Fallos'],
+                    values: [15, 85, 85, 60],
+                    description: 'Rendimiento bajo: Menos de un despliegue cada seis meses, lead time superior a seis meses, restauración en más de una semana y una tasa de fallos superior al 46%.'
+                }
+            };
+
+            const ctx = document.getElementById('doraMetricsChart').getContext('2d');
+            let doraChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: doraData.elite.labels,
+                    datasets: [{
+                        label: 'Rendimiento DevOps',
+                        data: doraData.elite.values,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(59, 130, 246, 1)'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: false
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: {
+                                backdropColor: 'transparent',
+                                color: '#64748b'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 14
+                                },
+                                color: '#334155'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                         tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    let value = context.raw;
+                                    let text = '';
+                                    if(context.label === 'Frecuencia Despliegue'){
+                                        text = ' (Más es mejor)';
+                                    } else {
+                                        text = ' (Menos es mejor)';
+                                    }
+                                    return context.label + ': ' + value + text;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            const metricsDescription = document.getElementById('metrics-description');
+            metricsDescription.innerHTML = `<p>${doraData.elite.description}</p>`;
+
+            const doraButtons = document.querySelectorAll('.dora-btn');
+            doraButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const level = button.dataset.level;
+                    doraChart.data.datasets[0].data = doraData[level].values;
+                    doraChart.update();
+                    metricsDescription.innerHTML = `<p>${doraData[level].description}</p>`;
+                    doraButtons.forEach(btn => {
+                        btn.classList.remove('bg-blue-500', 'text-white');
+                        btn.classList.add('bg-slate-200', 'text-slate-700');
+                    });
+                    button.classList.add('bg-blue-500', 'text-white');
+                    button.classList.remove('bg-slate-200', 'text-slate-700');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
